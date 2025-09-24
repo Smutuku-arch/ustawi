@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "ustawi-3c541"
+  },
+  "targets": {
+    "ustawi-3c541": {
+      "hosting": {
+        "ustawi-3c541": [
+          "ustawi-3c541"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

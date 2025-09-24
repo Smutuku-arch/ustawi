@@ -1,0 +1,171 @@
+@import '../styles/app.css';
+
+/* Main Policy Section */
+.policy {
+  padding: 20px;
+  color: var(--white);
+  font-family: var(--primary-font);
+  line-height: 1.6;
+  display: flex;
+  justify-content: center;
+  background-color: var(--secondary-bg);
+}
+
+.policyContentWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin-top: 10px;
+}
+
+.headline h2 {
+  font-size: 4rem;
+  font-weight: bolder;
+  margin: 0;
+  border-bottom: 5px solid var(--white);
+}
+
+.image {
+  flex: 1;
+}
+
+.policyImage {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 10px;
+}
+
+.bodyContainer {
+  padding: 25px;
+  margin: 0 auto;
+}
+
+.section {
+  margin-bottom: 30px;
+  padding: 10px;
+}
+
+.sectionTitle {
+  font-size: var(--Text-Two);
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: var(--primary-bg);
+}
+
+.sectionContent {
+  font-size: var(--Text-Four);
+  line-height: 1.6;
+  color: var(--black);
+}
+
+.sectionContent, .sectionList, .subsection {
+  margin-left: 2rem;
+}
+
+/* Subsection styling */
+.subsection {
+  margin-top: 20px;
+}
+
+.subsectionTitle {
+  font-size: 1.25rem;
+  font-weight: semi-bold;
+  margin-bottom: 8px;
+  color: var(--ash);
+}
+
+.subsectionContent {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--black);
+}
+
+/* List styling */
+.list, .sectionList {
+  padding-left: 20px;
+}
+
+.listItem {
+  font-size: var(--Text-Four);
+  color: var(--black);
+  list-style-type: disc;
+  margin-bottom: 5px;
+}
+
+
+
+/* Responsive Design */
+@media (max-width: 767.9px) {
+  .policyContentWrapper {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .image {
+    margin-top: 20px;
+    padding-right: 0;
+  }
+
+  .headline h2 {
+    font-size: 2rem;
+  }
+
+  .policySection {
+    margin-bottom: 15px;
+  }
+
+  .bodyContainer {
+    padding: 15px;
+  }
+
+  .section {
+    padding: 5px;
+  }
+
+  .sectionTitle {
+    font-size: 1.25rem;
+  }
+
+  .sectionContent,
+  .subsectionContent,
+  .listItem {
+    font-size: var(--Text-Four);
+  }
+
+  .subsectionTitle {
+    font-size: 1.1rem;
+  }
+
+  .list {
+    padding-left: 15px;
+  }
+
+}
+
+
+@media screen and (max-width: 480px) {
+  .bodyContainer {
+    padding: 10px;
+  }
+
+  .sectionTitle {
+    font-size: 1.1rem;
+  }
+
+  .sectionContent,
+  .subsectionContent,
+  .listItem {
+    font-size: 0.85rem;
+  }
+
+  .subsectionTitle {
+    font-size: 1rem;
+  }
+
+  .list {
+    padding-left: 10px;
+  }
+}
