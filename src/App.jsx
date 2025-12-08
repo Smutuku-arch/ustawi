@@ -1,70 +1,116 @@
-import AppLayout from "./layouts/appLayout"
-import Homepage from "./pages/home"
-import Login  from "./pages/logIn"
-import SignUp  from "./pages/signUp"
-import Profile from "./pages/profile"
-import Private from "./components/private/private"
-import Billing from "./components/billing"
-import Messages from "./components/messages"
-import Resources from "./components/dashboard/resources"
-import Settings from "./components/settings"
-import Booking ,{ action as bookingAction } from "./pages/booking"
-import { RouterProvider, 
-        createBrowserRouter, 
-        createRoutesFromElements, 
-        Route } from "react-router-dom"
-import "./assets/styles/app.css"
-import { useApp } from "./context/appContext"
-import BookingTicket, { loader as bookingTicketLoader } from "./components/bookingTicket"
-import RouteError from "./components/error-components/Error"
-import About from "./pages/about"
-import Appointments, { loader as appointmentLoader } from "./components/dashboard/appointments"
-import ComingSoon from "./components/utilities/comingSoon"
-import UstawiBot from "./components/chatbots/ustawiBot"
-import Policy from "./pages/policy"
-
+import React, { useState } from 'react';
+import { useApp } from './context/appContext';
+import Homepage from './pages/home';
+import Dashboard from './pages/Dashboard';
+import './App.css';
 
 function App() {
+  const { user, loading, login, register, logout } = useApp();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState('login');
+  const [error, setError] = useState('');
 
-  const userContext = useApp()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
 
+  async function handleAuth(e) {
+    e.preventDefault();
+    setError('');
+    try {
+      if (authMode === 'login') {
+        await login({ email, password });
+      } else {
+        await register({ name, email, password });
+      }
+      setShowAuthModal(false);
+    } catch (err) {
+      setError(err.response?.data?.error || err.message || 'Authentication failed');
+    }
+  }
 
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-          <Route path="/" element={<AppLayout />} errorElement={<RouteError />}>
-            <Route index element={<Homepage/>}></Route>
-            <Route path="about" element={<About/>} />
-            <Route path="login" element={<Login/>} />
-            <Route path="signup" element={<SignUp/>} />
-            <Route path="privacypolicy" element={<Policy/>} />
-            <Route element={<Private />}>
-              <Route path="profile" element={<Profile/>}>
-                <Route index element={<Appointments />} loader={appointmentLoader(userContext)} />
-                <Route path="messages" element={<Messages />} />
-                <Route path="billing" element={<Billing />} />
-                <Route path="resources" element={<Resources />} />
-                <Route path="settings" element={<Settings />} />
-              </Route>
-              <Route path="comingsoon" element={<ComingSoon />} />
-              <Route path="cbtchat" element={<UstawiBot />} />
-              <Route  path="booking" 
-                      element={<Booking/>} 
-                      action={bookingAction(userContext)}
-                      errorElement={<RouteError />}/>
-              <Route  path="booking/:uid/:id" 
-                      element={<BookingTicket />}
-                      loader={bookingTicketLoader(userContext)} 
-                      errorElement={<RouteError />}/>
-            </Route>
-          </Route>
-    )
-  )
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="spinner"></div>
+        <p>Loading Ustawi...</p>
+      </div>
+    );
+  }
 
+  if (!user) {
+    return (
+      <>
+        <Homepage onLoginClick={() => setShowAuthModal(true)} />
+        {showAuthModal && (
+          <div className="auth-modal-overlay" onClick={() => setShowAuthModal(false)}>
+            <div className="auth-modal" onClick={(e) => e.stopPropagation()}>
+              <button className="close-modal" onClick={() => setShowAuthModal(false)}>×</button>
+              <div className="auth-modal-header">
+                <h1>Ustawi</h1>
+                <p className="tagline">...your therapist</p>
+              </div>
+              <h2>{authMode === 'login' ? 'Welcome Back' : 'Create Account'}</h2>
+              {error && <div className="error-message">{error}</div>}
+              <form onSubmit={handleAuth}>
+                {authMode === 'register' && (
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      placeholder="Full Name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                    />
+                  </div>
+                )}
+                <div className="form-group">
+                  <input
+                    type="email"
+                    placeholder="Email Address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <button type="submit" className="btn-primary">
+                  {authMode === 'login' ? 'Login' : 'Sign Up'}
+                </button>
+              </form>
+              <p className="toggle-auth">
+                {authMode === 'login' ? (
+                  <>
+                    Don't have an account?{' '}
+                    <a href="#" onClick={(e) => { e.preventDefault(); setAuthMode('register'); }}>
+                      Sign up
+                    </a>
+                  </>
+                ) : (
+                  <>
+                    Already have an account?{' '}
+                    <a href="#" onClick={(e) => { e.preventDefault(); setAuthMode('login'); }}>
+                      Login
+                    </a>
+                  </>
+                )}
+              </p>
+            </div>
+          </div>
+        )}
+      </>
+    );
+  }
 
-  return(
-      
-        <RouterProvider router={router}/>
-  )
+  return <Dashboard user={user} onLogout={logout} />;
 }
 
-export default App
+export default App;

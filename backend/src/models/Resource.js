@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const ResourceSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  type: { type: String }, // e.g., "room", "equipment"
+  type: { type: String },
   location: { type: String },
   capacity: { type: Number },
   metadata: { type: mongoose.Schema.Types.Mixed },

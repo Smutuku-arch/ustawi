@@ -1,0 +1,43 @@
+.chat-feature {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 80px 20px;
+  text-align: center;
+  border-radius: 16px;
+  margin: 0 20px;
+}
+
+.chat-feature h2 {
+  color: white;
+  margin-bottom: 30px;
+}
+
+.chat-feature p {
+  font-size: 1.2rem;
+  max-width: 700px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+}
+
+.chat-preview {
+  background: white;
+  border-radius: 16px;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+.chat-message {
+  background: #f0f0f0;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.chat-message.bot {
+  background: #667eea;
+  color: white;
+}

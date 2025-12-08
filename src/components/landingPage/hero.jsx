@@ -1,11 +1,12 @@
 import React from 'react'
+import './hero.css' // add this line if missing
 import { Link } from 'react-router-dom'
 import styles from '../../assets/styles/landingPage/hero.module.css'
 import heroImage from '../../assets/images/hero.bg.webp' 
 
-function Hero({ user }) {
+function Hero({ user, onLoginClick }) {
   return (
-    <div className={styles.hero}>
+    <section className="hero">
       <div className={styles.heroWrapper}>
         <div className={styles.heroText}>
           <h1 className={styles.heroTitle}>
@@ -26,7 +27,13 @@ function Hero({ user }) {
           <img src={heroImage} alt="Therapy illustration" />
         </div>
       </div>
-    </div>
+
+      {!user && (
+        <button className="btn-login" onClick={onLoginClick}>
+          Login
+        </button>
+      )}
+    </section>
   )
 }
 

@@ -1,31 +1,27 @@
 import React from 'react';
-import { steps } from '../../services/fake-data/data';
-import styles from '../../assets/styles/landingPage/howItWorks.module.css';
+import './howItWorks.css';
 
 function HowItWorks() {
+  const steps = [
+    { number: 1, title: 'Sign Up', description: 'Create your free account in seconds' },
+    { number: 2, title: 'Share Your Goals', description: 'Tell us about your mental health and career aspirations' },
+    { number: 3, title: 'Get Support', description: 'Receive personalized guidance and track your progress' }
+  ];
 
   return (
-    <section id="how-it-works" className={styles.howItWorks}>
-      <div className={styles.container}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionSubtitle}>Process</h2>
-          <h3 className={styles.sectionTitle}>Simple Steps to Better Mental Health</h3>
-        </div>
-
-        <div className={styles.stepsContainer}>
-          {steps.map((step, index) => (
-            <div key={index} className={styles.step}>
-              <div className={styles.stepNumber}>
-                {step.number}
-              </div>
-              <h4 className={styles.stepTitle}>{step.title}</h4>
-              <p className={styles.stepDescription}>{step.description}</p>
-            </div>
-          ))}
-        </div>
+    <div className="how-it-works">
+      <h2>How It Works</h2>
+      <div className="steps-container">
+        {steps.map((step) => (
+          <div key={step.number} className="step">
+            <div className="step-number">{step.number}</div>
+            <h3>{step.title}</h3>
+            <p>{step.description}</p>
+          </div>
+        ))}
       </div>
-    </section>
+    </div>
   );
-};
+}
 
 export default HowItWorks;

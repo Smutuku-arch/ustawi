@@ -1,28 +1,23 @@
-const API_BASE = '/api/moods';
+import axios from 'axios';
+
+const API_BASE = `${import.meta.env.VITE_API_BASE || 'http://localhost:4000'}/api/moods`;
 
 function authHeaders() {
   const token = localStorage.getItem('token');
-  return token ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+  return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
 }
 
 export async function createMood({ mood, score, note }) {
-  const res = await fetch(API_BASE, {
-    method: 'POST',
-    headers: authHeaders(),
-    body: JSON.stringify({ mood, score, note })
-  });
-  if (!res.ok) throw new Error((await res.json()).error || 'Failed to create mood');
-  return res.json();
+  const { data } = await axios.post(API_BASE, { mood, score, note }, { headers: authHeaders() });
+  return data;
 }
 
 export async function getMoods() {
-  const res = await fetch(API_BASE, { headers: authHeaders() });
-  if (!res.ok) throw new Error('Failed to fetch moods');
-  return res.json();
+  const { data } = await axios.get(API_BASE, { headers: authHeaders() });
+  return data;
 }
 
 export async function getMoodStats() {
-  const res = await fetch(`${API_BASE}/stats/summary`, { headers: authHeaders() });
-  if (!res.ok) throw new Error('Failed to fetch mood stats');
-  return res.json();
+  const { data } = await axios.get(`${API_BASE}/stats/summary`, { headers: authHeaders() });
+  return data;
 }

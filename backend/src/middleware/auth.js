@@ -7,24 +7,20 @@ function signToken(id, opts = {}) {
 }
 
 function extractToken(req) {
-  // Authorization header (Bearer token or raw)
   const authHeader = req.headers.authorization || req.headers.Authorization;
   if (authHeader) {
     const parts = authHeader.split(' ');
     if (parts.length === 2) return parts[1];
     return authHeader;
   }
-  // cookie (requires cookie-parser middleware)
   if (req.cookies && (req.cookies.token || req.cookies.authorization)) {
     return req.cookies.token || req.cookies.authorization;
   }
-  // query param fallback (useful for testing)
   if (req.query && req.query.token) return req.query.token;
   return null;
 }
 
 async function authMiddleware(req, res, next) {
-  // allow preflight
   if (req.method === 'OPTIONS') return next();
 
   try {

@@ -53,8 +53,7 @@ Whether you're a student at KU feeling overwhelmed by exams, a graduate from JKU
 - **dotenv** for environment variables
 
 ### AI & NLP
-- **Llama 3**
-- **Azure AI SDKs** via GitHub Marketplace
+- **OpenAI GPT-3.5/4** (or Azure OpenAI)
 - Custom-trained Kenyan context models (Swahili + English hybrid)
 
 ---

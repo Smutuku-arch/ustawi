@@ -53,7 +53,7 @@ router.delete('/:id', auth, async (req, res, next) => {
   try {
     const resource = await Resource.findById(req.params.id);
     if (!resource) return res.status(404).json({ error: 'Not found' });
-    await resource.remove();
+    await resource.deleteOne();
     res.json({ success: true });
   } catch (err) {
     next(err);

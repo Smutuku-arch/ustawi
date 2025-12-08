@@ -58,7 +58,7 @@ router.delete('/:id', auth, async (req, res, next) => {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ error: 'Not found' });
     if (!post.author.equals(req.user._id)) return res.status(403).json({ error: 'Forbidden' });
-    await post.remove();
+    await post.deleteOne();
     res.json({ success: true });
   } catch (err) {
     next(err);

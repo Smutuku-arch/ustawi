@@ -1,53 +1,39 @@
-import React, { useState } from 'react'
-import styles from '../../assets/styles/landingPage/testimonials.module.css'
-import { testimonialsData } from '../../services/fake-data/data';
-import { FaStar, FaStarHalfAlt } from 'react-icons/fa';
+import React from 'react';
+import './testimonials.css';
 
-
-function Testimonials(){
+function Testimonials() {
+  const testimonials = [
+    {
+      text: 'Ustawi helped me manage my anxiety during my final year at KU. The mood tracker and AI chatbot were lifesavers!',
+      author: 'Jane M.',
+      role: 'Student, Kenyatta University'
+    },
+    {
+      text: 'The career guidance feature helped me identify my strengths and land my dream job. Highly recommended!',
+      author: 'David K.',
+      role: 'Graduate, JKUAT'
+    }
+  ];
 
   return (
-    <section id="testimonials" className={styles.testimonials}>
-      <div className={styles.container}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionSubtitle}>Testimonials</h2>
-          <h3 className={styles.sectionTitle}>Stories of Transformation</h3>
-        </div>
-
-        <div className={styles.testimonialsGrid}>
-          {testimonialsData.map((testimonial, index) => (
-            <div key={index} className={styles.testimonialCard}>
-              <div className={styles.testimonialHeader}>
-                <img 
-                  src={testimonial.image} 
-                  alt={testimonial.name} 
-                  className={styles.testimonialImage}
-                />
-                <div>
-                  <h4 className={styles.testimonialName}>{testimonial.name}</h4>
-                  <p className={styles.testimonialService}>{testimonial.service}</p>
-                </div>
-              </div>
-              <div className={styles.testimonialContent}>
-                <p className={styles.testimonialQuote}>{testimonial.quote}</p>
-              </div>
-              <div className={styles.testimonialRating}>
-                {[...Array(5)].map((_, i) => {
-                  if (i < Math.floor(testimonial.rating)) {
-                    return <FaStar key={i} className={styles.starIcon} />;
-                  } else if (i === Math.floor(testimonial.rating) && testimonial.rating % 1 !== 0) {
-                    return <FaStarHalfAlt key={i} className={styles.starIcon} />;
-                  } else {
-                    return <FaStar key={i} className={styles.starIconEmpty} />;
-                  }
-                })}
+    <div>
+      <h2>What Our Users Say</h2>
+      <div className="testimonials-container">
+        {testimonials.map((testimonial, index) => (
+          <div key={index} className="testimonial-card">
+            <p className="testimonial-text">{testimonial.text}</p>
+            <div className="testimonial-author">
+              <div className="author-avatar">{testimonial.author[0]}</div>
+              <div className="author-info">
+                <h4>{testimonial.author}</h4>
+                <p>{testimonial.role}</p>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
-    </section>
+    </div>
   );
-};
+}
 
 export default Testimonials;

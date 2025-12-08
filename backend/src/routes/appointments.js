@@ -112,4 +112,33 @@ router.delete('/:id', auth, async (req, res, next) => {
   }
 });
 
+// Get available time slots for a resource
+router.get('/available-slots/:resourceId', async (req, res, next) => {
+  try {
+    const { resourceId } = req.params;
+    const { date } = req.query; // format: YYYY-MM-DD
+    
+    if (!date) return res.status(400).json({ error: 'Date required' });
+    
+    const resource = await Resource.findById(resourceId);
+    if (!resource) return res.status(404).json({ error: 'Resource not found' });
+    
+    // Get all bookings for this resource on the given date
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+    
+    const bookings = await Appointment.find({
+      resource: resourceId,
+      status: { $ne: 'cancelled' },
+      start: { $gte: startOfDay, $lte: endOfDay }
+    }).select('start end');
+    
+    res.json({ resource, bookings });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
