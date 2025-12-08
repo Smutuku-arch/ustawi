@@ -1,60 +1,90 @@
 # Ustawi
 
-**Ustawi** is a responsive web application designed to support young Kenyans—especially university students and early-career professionals—who are navigating academic stress, emotional challenges, and career uncertainty. The platform blends mental health tools and career guidance into a single, intuitive interface that encourages self-reflection, growth, and informed decision-making.
+**Ustawi** is a comprehensive mental health and career guidance platform designed for young Kenyans—especially university students and early-career professionals. The platform combines mental wellness tools, AI-powered support, career guidance, and a rich resource library into a single, intuitive web application.
 
-Whether you're a student at KU feeling overwhelmed by exams, a graduate from JKUAT unsure about your next step, or a young professional in Nairobi juggling work and mental health—Ustawi is here for you.
+Whether you're a student managing academic stress, a graduate navigating career choices, or a young professional balancing work and wellness—Ustawi provides the tools and support you need to thrive.
 
 ---
 
-## 🌟 Features
+## 🌟 Key Features
 
-### 🔐 Secure Account Management
-- Register, log in, and manage your profile securely.
-- Role-based access (user, admin) with JWT authentication.
+### 🔐 Secure Authentication & User Management
+- JWT-based authentication with bcrypt password hashing
+- Role-based access control (user, admin)
+- Secure session management
 
-### 📅 Mood & Wellness Check-ins
-- Daily emotional check-ins to track your mental state.
-- Visual mood graphs and journaling prompts to encourage reflection and growth.
+### 📊 Mood & Wellness Tracking
+- Daily emotional check-ins with visual mood graphs
+- Score-based tracking (1-10 scale) with emoji indicators
+- Personal journaling with notes for each mood entry
+- Historical mood data visualization
 
 ### 🤖 AI-Powered Chatbot
-- Conversational assistant offering wellness tips and career advice.
-- Trained to respond with empathy and support around stress, anxiety, and decision-making.
+- Intelligent conversational assistant using OpenAI GPT
+- Contextual wellness tips and career guidance
+- Empathetic responses to stress, anxiety, and decision-making
+- Pre-built conversation prompts for common concerns
 
-### 🎯 Career Guidance Engine
-- AI-driven suggestions based on your interests, strengths, and goals.
-- Explore career paths, build CVs, and prepare for interviews.
+### 📚 Comprehensive Resource Library
+- **Books**: Upload and read PDF books with inline viewer
+  - Full-page PDF rendering
+  - Smooth scrolling through pages
+  - Cover image support
+- **Articles**: Create, read, and manage wellness articles
+  - Rich text content with categories (Mental Health, Career, Wellness, Other)
+  - Article summaries and view tracking
+  - Professional reading layout with justified text
+  - Full article editing capabilities
+- **Videos**: Upload and stream educational videos
+  - Video thumbnail support
+  - Duration tracking
+  - In-app video player
 
-### 📚 Resource Hub
-- Curated articles, videos, and exercises focused on mental resilience and career planning.
-- Upload and manage books and resources (admin only).
+### 🎯 Resource Management System
+- Book appointments with counselors and career advisors
+- Real-time availability checking
+- Automatic conflict detection
+- Appointment confirmation system
 
-### 📱 Interactive UI
-- Smooth animations and responsive design for mobile-first access.
-- Optimized for low-bandwidth environments and campus Wi-Fi.
+### ⚙️ Advanced Admin Dashboard
+- **User Management**: View all users and manage roles (admin/user)
+- **Content Management**:
+  - Upload books with cover images
+  - Write and edit articles with rich formatting
+  - Upload videos with thumbnails
+  - Delete and manage all content types
+- **Analytics**: Track total users, admins, books, articles, and videos
+- **Real-time Updates**: Instant feedback for all admin actions
 
-### 🗓️ Appointments & Resources
-- Schedule appointments with resources (counselors, career advisors).
-- Automatic conflict detection for resource booking.
+### 📱 Responsive Design
+- Mobile-first approach optimized for smartphones
+- Tablet and desktop layouts
+- Smooth animations and transitions
+- Optimized for low-bandwidth environments
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **React.js** (with Vite for bundling)
-- **Axios** for API calls
-- Responsive UI with modern CSS
+- **React.js 18** with Vite for fast development
+- **Axios** for API communication
+- **Context API** for state management
+- **CSS3** with modern responsive design
+- **PDF.js** for inline PDF viewing
 
 ### Backend
-- **Node.js + Express**
-- **MongoDB** (with Mongoose ODM)
-- **JWT** authentication (bcryptjs for password hashing)
-- **Multer** for file uploads (books, resources)
-- **dotenv** for environment variables
+- **Node.js** with Express.js
+- **MongoDB** with Mongoose ODM
+- **JWT** authentication
+- **Multer** for file uploads (books, covers, videos, thumbnails)
+- **bcryptjs** for password hashing
+- **CORS** for cross-origin requests
 
-### AI & NLP
-- **OpenAI GPT-3.5/4** (or Azure OpenAI)
-- Custom-trained Kenyan context models (Swahili + English hybrid)
+### AI Integration
+- **OpenAI API** (GPT-3.5/4) for chatbot
+- Custom prompt engineering for Kenyan context
+- Swahili and English support
 
 ---
 
@@ -62,10 +92,11 @@ Whether you're a student at KU feeling overwhelmed by exams, a graduate from JKU
 
 ### Prerequisites
 - **Node.js** 18.x or higher
-- **MongoDB** (local or Atlas cluster)
+- **MongoDB** (local installation or MongoDB Atlas)
 - **npm** or **pnpm**
+- **OpenAI API key** (for chatbot functionality)
 
-### 1. Clone the repository
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/Smutuku-arch/Uswawi
 cd ustawi
@@ -82,12 +113,13 @@ Create a `.env` file in the `backend` folder:
 
 ```env
 PORT=4000
-MONGO_URI=mongodb://localhost:27017/ustawi   # or your MongoDB Atlas URI
-JWT_SECRET=your_strong_jwt_secret_here
+MONGO_URI=mongodb://localhost:27017/ustawi
+JWT_SECRET=your_strong_jwt_secret_here_min_32_chars
 FRONTEND_URL=http://localhost:5173
-AUTO_CREATE_ADMIN=false   # set to true to auto-create admin on startup (requires ADMIN_EMAIL and ADMIN_PASSWORD)
+OPENAI_API_KEY=your_openai_api_key_here
+AUTO_CREATE_ADMIN=false
 ADMIN_EMAIL=admin@example.com
-ADMIN_PASSWORD=yourAdminPassword
+ADMIN_PASSWORD=strongPassword123
 ```
 
 Run setup (creates uploads folder):
@@ -96,10 +128,10 @@ Run setup (creates uploads folder):
 npm run setup
 ```
 
-Create an admin user (if AUTO_CREATE_ADMIN=false):
+Create an admin user:
 
 ```bash
-npm run create-admin -- --email=admin@example.com --password=strongpass --name="Admin"
+npm run create-admin -- --email=admin@localhost.com --password=admin123 --name="Admin User"
 ```
 
 Start the backend:
@@ -108,16 +140,16 @@ Start the backend:
 npm run dev
 ```
 
-Backend will run at `http://localhost:4000`. Check health: `http://localhost:4000/health`.
+Backend runs at `http://localhost:4000`. Health check: `http://localhost:4000/health`
 
 ### 3. Frontend Setup
 
 ```bash
 cd ..   # back to project root
-npm install   # or pnpm install
+npm install
 ```
 
-Create a `.env` file in the project root (if needed for API base URL):
+Create a `.env` file in the project root:
 
 ```env
 VITE_API_BASE=http://localhost:4000
@@ -126,172 +158,101 @@ VITE_API_BASE=http://localhost:4000
 Start the frontend:
 
 ```bash
-npm run dev   # or pnpm dev
-```
-
-Frontend will run at `http://localhost:5173`.
-
-### 4. Verify Installation
-
-- **Health check:** `curl http://localhost:4000/health`
-- **Login:** POST `http://localhost:4000/api/auth/login` with `{ "email": "admin@example.com", "password": "strongpass" }`
-- **Admin dashboard:** Navigate to `http://localhost:5173/admin` (if route is configured) and log in with admin credentials.
-
----
-
-## 🖥️ Localhost Deployment (Development)
-
-### Quick Start (All-in-One)
-
-From the project root, open **two terminals**:
-
-**Terminal 1 — Backend:**
-```bash
-cd backend
-npm install
-npm run setup
-npm run create-admin -- --email=admin@localhost.com --password=admin123 --name="Local Admin"
 npm run dev
 ```
-Backend runs at `http://localhost:4000`.
 
-**Terminal 2 — Frontend:**
-```bash
-# from project root
-npm install   # or pnpm install
-npm run dev   # or pnpm dev
-```
 Frontend runs at `http://localhost:5173`.
 
-### Configure Environment Variables
+### 4. Initial Login
 
-**Backend** (`backend/.env`):
-```env
-PORT=4000
-MONGO_URI=mongodb://localhost:27017/ustawi
-JWT_SECRET=dev_secret_replace_in_production
-FRONTEND_URL=http://localhost:5173
-AUTO_CREATE_ADMIN=false
-ADMIN_EMAIL=admin@localhost.com
-ADMIN_PASSWORD=admin123
-```
+**Admin Credentials:**
+- Email: `admin@localhost.com`
+- Password: `admin123`
 
-**Frontend** (`.env` in project root, optional):
-```env
-VITE_API_BASE=http://localhost:4000
-```
-
-### Start MongoDB (if running locally)
-
-**Docker:**
-```bash
-docker run -d -p 27017:27017 --name ustawi-mongo -v mongo-data:/data/db mongo:6
-```
-
-**Homebrew (macOS):**
-```bash
-brew services start mongodb-community
-```
-
-**Linux (systemd):**
-```bash
-sudo systemctl start mongod
-```
-
-### Verify Localhost Deployment
-
-1. **Health check:** `curl http://localhost:4000/health`
-2. **Login:** `curl -X POST http://localhost:4000/api/auth/login -H "Content-Type: application/json" -d '{"email":"admin@localhost.com","password":"admin123"}'`
-3. **Frontend:** Open `http://localhost:5173` in your browser.
-4. **Admin panel:** Navigate to `http://localhost:5173/admin` and log in with admin credentials.
-
-### Troubleshooting Localhost
-
-- **Backend won't start:** Check if MongoDB is running (`mongosh` or `docker ps`). Verify `.env` values.
-- **Frontend won't connect:** Ensure `VITE_API_BASE` points to `http://localhost:4000` and backend is running.
-- **CORS errors:** Confirm `FRONTEND_URL=http://localhost:5173` in backend `.env`.
-- **Port conflicts:** Change `PORT` in backend `.env` or Vite port in `vite.config.js`.
+**First Steps:**
+1. Navigate to `http://localhost:5173`
+2. Click "Get Started" or "Login"
+3. Use admin credentials to access admin features
+4. Explore the dashboard, upload content, and test features
 
 ---
 
-## 📦 Deployment
+## 📦 Deployment Guide
 
-### Backend Deployment
+### Backend Deployment (Render)
 
-#### Option 1: Render
-1. Push code to GitHub.
-2. Create a new **Web Service** on [Render](https://render.com).
-3. Connect your repo and set:
-   - **Build Command:** `cd backend && npm install`
+1. Push code to GitHub
+2. Create a **Web Service** on [Render](https://render.com)
+3. Connect your repository
+4. Configure:
+   - **Build Command:** `cd backend && npm install && npm run setup`
    - **Start Command:** `cd backend && npm start`
-4. Add environment variables in Render dashboard:
-   - `MONGO_URI` (MongoDB Atlas connection string)
-   - `JWT_SECRET`
-   - `FRONTEND_URL` (your deployed frontend URL)
-   - `AUTO_CREATE_ADMIN=true` (optional, with `ADMIN_EMAIL` and `ADMIN_PASSWORD`)
-5. Deploy. Backend will be live at `https://your-app.onrender.com`.
+5. Add environment variables:
+   ```
+   MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/ustawi
+   JWT_SECRET=production_secret_min_32_characters
+   FRONTEND_URL=https://your-frontend-url.vercel.app
+   OPENAI_API_KEY=your_openai_key
+   AUTO_CREATE_ADMIN=true
+   ADMIN_EMAIL=admin@yourdomain.com
+   ADMIN_PASSWORD=securePassword123
+   ```
+6. Deploy
 
-#### Option 2: Heroku
+### Frontend Deployment (Vercel)
+
 ```bash
-heroku login
-heroku create your-app-name
-heroku config:set MONGO_URI="your_mongo_uri" JWT_SECRET="your_jwt_secret" FRONTEND_URL="https://your-frontend.com"
-git subtree push --prefix backend heroku main
-```
-
-Or deploy via Heroku dashboard by connecting your GitHub repo.
-
-### Frontend Deployment
-
-#### Option 1: Vercel
-```bash
-npm i -g vercel
+npm run build
 vercel --prod
 ```
-Set environment variables in Vercel dashboard:
-- `VITE_API_BASE=https://your-backend.onrender.com`
 
-#### Option 2: Netlify
+Or use Vercel dashboard:
+1. Import GitHub repository
+2. Set environment variable:
+   ```
+   VITE_API_BASE=https://your-backend.onrender.com
+   ```
+3. Deploy
+
+### Alternative: Static Frontend from Backend
+
 ```bash
 npm run build
-```
-Upload `dist` folder to Netlify or connect GitHub repo. Set environment variable:
-- `VITE_API_BASE=https://your-backend.onrender.com`
-
-#### Option 3: Serve from Backend (Static)
-Build the frontend:
-```bash
-npm run build
-```
-Copy `dist` contents to `backend/public`:
-```bash
 cp -r dist/* backend/public/
 ```
-Add static middleware in `backend/src/index.js`:
+
+Update `backend/src/index.js`:
 ```javascript
 app.use(express.static('public'));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
 ```
-Deploy backend only; frontend will be served at root URL.
+
+Deploy backend only—frontend served at root URL.
 
 ---
 
 ## 🔧 Environment Variables
 
-### Backend (.env in backend folder)
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `PORT` | Server port | `4000` |
-| `MONGO_URI` | MongoDB connection string | `mongodb://localhost:27017/ustawi` or Atlas URI |
-| `JWT_SECRET` | Secret for signing JWTs | `your_strong_secret` |
-| `FRONTEND_URL` | Frontend origin for CORS | `http://localhost:5173` |
-| `AUTO_CREATE_ADMIN` | Auto-create admin on startup | `true` or `false` |
-| `ADMIN_EMAIL` | Admin email (if AUTO_CREATE_ADMIN=true) | `admin@example.com` |
-| `ADMIN_PASSWORD` | Admin password | `yourPassword` |
+### Backend (`backend/.env`)
 
-### Frontend (.env in project root, optional)
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `VITE_API_BASE` | Backend API base URL | `http://localhost:4000` or `https://your-backend.com` |
+| Variable | Description | Required | Example |
+|----------|-------------|----------|---------|
+| `PORT` | Server port | No | `4000` |
+| `MONGO_URI` | MongoDB connection string | Yes | `mongodb://localhost:27017/ustawi` |
+| `JWT_SECRET` | JWT signing secret (min 32 chars) | Yes | `your_very_strong_secret_key_here` |
+| `FRONTEND_URL` | Frontend origin for CORS | Yes | `http://localhost:5173` |
+| `OPENAI_API_KEY` | OpenAI API key for chatbot | Yes | `sk-...` |
+| `AUTO_CREATE_ADMIN` | Auto-create admin on startup | No | `false` |
+| `ADMIN_EMAIL` | Admin email (if AUTO_CREATE) | No | `admin@example.com` |
+| `ADMIN_PASSWORD` | Admin password | No | `strongPassword` |
+
+### Frontend (`.env` in root)
+
+| Variable | Description | Required | Example |
+|----------|-------------|----------|---------|
+| `VITE_API_BASE` | Backend API base URL | Yes | `http://localhost:4000` |
 
 ---
 
@@ -301,63 +262,249 @@ Deploy backend only; frontend will be served at root URL.
 ustawi/
 ├── backend/
 │   ├── src/
-│   │   ├── models/          # Mongoose models (User, Post, Mood, Resource, Appointment, Book)
-│   │   ├── routes/          # Express routes (auth, posts, moods, resources, appointments, admin)
-│   │   ├── middleware/      # Auth middleware, admin middleware
-│   │   ├── utils/           # Multer upload config
-│   │   ├── scripts/         # createAdmin.js
-│   │   └── index.js         # Express app entry
-│   ├── uploads/             # Uploaded files (local, for dev)
-│   ├── .env.example
-│   ├── package.json
-│   └── README.md
-├── src/                     # Frontend React code
-│   ├── api/                 # API helpers (moods.js, admin.js, etc.)
-│   ├── components/          # React components (MoodTracker, AdminDashboard, etc.)
-│   └── App.jsx
+│   │   ├── models/
+│   │   │   ├── User.js              # User authentication model
+│   │   │   ├── Post.js              # Community posts
+│   │   │   ├── Mood.js              # Mood tracking entries
+│   │   │   ├── Resource.js          # Resources (counselors, etc.)
+│   │   │   ├── Appointment.js       # Appointment bookings
+│   │   │   ├── Book.js              # PDF books
+│   │   │   ├── Article.js           # Articles (NEW)
+│   │   │   └── Video.js             # Videos (NEW)
+│   │   ├── routes/
+│   │   │   ├── auth.js              # Authentication routes
+│   │   │   ├── posts.js             # Community posts
+│   │   │   ├── moods.js             # Mood tracking
+│   │   │   ├── resources.js         # Resource management
+│   │   │   ├── appointments.js      # Appointment booking
+│   │   │   ├── books.js             # Book routes (NEW)
+│   │   │   ├── articles.js          # Article routes (admin)
+│   │   │   ├── articlesPublic.js    # Public article routes (NEW)
+│   │   │   ├── videos.js            # Video routes (NEW)
+│   │   │   ├── admin.js             # Admin management
+│   │   │   └── ai.js                # AI chatbot
+│   │   ├── middleware/
+│   │   │   ├── auth.js              # JWT verification
+│   │   │   └── admin.js             # Admin-only middleware
+│   │   ├── utils/
+│   │   │   └── upload.js            # Multer file upload config
+│   │   ├── scripts/
+│   │   │   ├── createAdmin.js       # Create admin script
+│   │   │   ├── resetDb.js           # Database reset
+│   │   │   └── seed.js              # Seed sample data
+│   │   └── index.js                 # Express app entry
+│   ├── uploads/                     # Uploaded files (books, videos, images)
+│   ├── .env
+│   └── package.json
+├── src/                             # Frontend React code
+│   ├── api/
+│   │   ├── moods.js
+│   │   ├── admin.js                 # Admin API calls (NEW: updateArticle)
+│   │   ├── books.js                 # Books API (NEW)
+│   │   ├── articles.js              # Articles API (NEW)
+│   │   └── videos.js                # Videos API (NEW)
+│   ├── components/
+│   │   ├── MoodTracker.jsx          # Mood tracking component
+│   │   ├── AdminDashboard.jsx       # Admin panel (ENHANCED)
+│   │   ├── AIChatbot.jsx            # AI chat interface
+│   │   └── landingPage/             # Landing page components
+│   ├── pages/
+│   │   ├── Dashboard.jsx            # Main dashboard (ENHANCED)
+│   │   ├── Resources.jsx            # Resource library (ENHANCED: articles, videos)
+│   │   ├── BookSession.jsx          # Appointment booking
+│   │   └── home.jsx                 # Landing page
+│   ├── context/
+│   │   └── appContext.jsx           # Global state management
+│   ├── App.jsx
+│   └── main.jsx
 ├── public/
-├── .env.example
+│   └── pdfjs/
+│       └── viewer.html              # PDF.js viewer (NEW)
+├── .env
 ├── package.json
+├── vite.config.js
 └── README.md
 ```
 
 ---
 
-## 🧪 Testing
+## 🎨 New Features Highlights
 
-### Backend
-- Run health check: `curl http://localhost:4000/health`
-- Login: `curl -X POST http://localhost:4000/api/auth/login -H "Content-Type: application/json" -d '{"email":"admin@example.com","password":"yourpass"}'`
-- Admin endpoints: `curl -H "Authorization: Bearer <TOKEN>" http://localhost:4000/api/admin/users`
+### 📖 Inline PDF Viewer
+- View books directly in the browser without downloads
+- Full-page rendering with PDF.js
+- Smooth scrolling through pages
+- Persistent across sessions via sidebar navigation
 
-### Frontend
-- Open `http://localhost:5173` and test login, mood tracking, admin dashboard, resource booking.
+### ✍️ Article System
+- Create rich-text articles with categories
+- Edit existing articles inline
+- Summary and full content views
+- View tracking and metadata display
+- Justified text layout for professional reading experience
+
+### 🎥 Video Library
+- Upload educational and wellness videos
+- Thumbnail support for previews
+- Duration tracking
+- In-app video player with controls
+- Modal playback for better viewing experience
+
+### 🛠️ Enhanced Admin Dashboard
+- Tabbed interface for easy navigation
+- Real-time stats dashboard
+- Edit/delete capabilities for all content types
+- File upload with preview
+- Success/error notifications
+- Responsive grid layouts
+
+---
+
+## 🧪 API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - User login
+
+### Moods
+- `POST /api/moods` - Log mood entry
+- `GET /api/moods/stats` - Get mood statistics
+- `GET /api/moods` - List all user moods
+
+### Books (Public)
+- `GET /api/books` - List all books
+- `GET /api/books/:id` - Get single book
+
+### Articles (Public)
+- `GET /api/articles` - List all articles
+- `GET /api/articles/:id` - Get single article (increments views)
+
+### Videos (Public)
+- `GET /api/videos` - List all videos
+- `GET /api/videos/:id` - Get single video (increments views)
+
+### Admin (Requires Admin Role)
+- `GET /api/admin/users` - List all users
+- `POST /api/admin/users/:id/role` - Change user role
+- `POST /api/admin/books` - Upload book
+- `DELETE /api/admin/books/:id` - Delete book
+- `POST /api/admin/articles` - Create article
+- `PUT /api/admin/articles/:id` - Update article
+- `DELETE /api/admin/articles/:id` - Delete article
+- `POST /api/admin/videos` - Upload video
+- `DELETE /api/admin/videos/:id` - Delete video
+
+### AI Chatbot
+- `POST /api/ai/chat` - Send message to AI
+
+---
+
+## 🔒 Security Features
+
+- **JWT Authentication**: Secure token-based auth
+- **Password Hashing**: bcrypt with salt rounds
+- **Role-Based Access**: Admin-only routes protected
+- **CORS Protection**: Configured allowed origins
+- **Input Validation**: Server-side validation for all inputs
+- **File Upload Security**: Type and size restrictions via Multer
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! Please:
-1. Fork the repo.
-2. Create a feature branch (`git checkout -b feature/YourFeature`).
-3. Commit changes (`git commit -m 'Add YourFeature'`).
-4. Push to branch (`git push origin feature/YourFeature`).
-5. Open a Pull Request.
+We welcome contributions! To contribute:
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/YourFeature`
+3. Make your changes
+4. Commit: `git commit -m 'Add YourFeature'`
+5. Push: `git push origin feature/YourFeature`
+6. Open a Pull Request
+
+### Development Guidelines
+- Follow existing code style
+- Add comments for complex logic
+- Test features before submitting PR
+- Update README if adding new features
+
+---
+
+## 🐛 Troubleshooting
+
+### Backend Issues
+- **MongoDB connection fails**: Verify `MONGO_URI` is correct. Check MongoDB is running.
+- **Port already in use**: Change `PORT` in `.env`
+- **JWT errors**: Ensure `JWT_SECRET` is at least 32 characters
+- **File upload fails**: Check `uploads/` folder exists and has write permissions
+
+### Frontend Issues
+- **API calls fail**: Verify `VITE_API_BASE` points to running backend
+- **CORS errors**: Ensure backend `FRONTEND_URL` matches frontend origin
+- **PDF won't load**: Check browser console for errors. Ensure PDF URL is accessible.
+- **Login fails**: Clear browser cache and local storage
+
+### Common Solutions
+```bash
+# Reset node_modules
+rm -rf node_modules package-lock.json
+npm install
+
+# Clear MongoDB collections
+npm run reset-db
+
+# Recreate admin
+npm run create-admin -- --email=admin@test.com --password=test123 --name="Test Admin"
+```
+
+---
+
+## 📊 Analytics & Monitoring
+
+The admin dashboard provides real-time insights:
+- Total registered users
+- Admin vs regular users
+- Total books, articles, and videos
+- Article view counts
+- Video view counts
+
+---
+
+## 🌍 Roadmap
+
+- [ ] Push notifications for appointments
+- [ ] Advanced mood analytics with AI insights
+- [ ] Group therapy session scheduling
+- [ ] Mobile app (React Native)
+- [ ] Multi-language support (Swahili, Kikuyu)
+- [ ] Payment integration for premium features
+- [ ] Community forums with moderation
+- [ ] Progress badges and gamification
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License. See [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🌍 Community & Support
+## 🙏 Acknowledgments
 
-- **Email:** support@ustawi.co.ke (example)
-- **Twitter:** @ustawiapp
-- **Discord:** [Join our community](#)
+- **OpenAI** for GPT API
+- **MongoDB** for database services
+- **Render** and **Vercel** for hosting
+- Kenyan universities and mental health professionals for insights
+- The open-source community
 
 ---
 
-**Ustawi** — Empowering Kenyan youth to thrive mentally and professionally.
+## 📞 Support & Contact
+
+- **Email**: support@ustawi.co.ke
+- **Website**: [ustawi.co.ke](https://ustawi.co.ke) (coming soon)
+- **Twitter**: [@ustawiapp](https://twitter.com/ustawiapp)
+- **GitHub Issues**: [Report bugs](https://github.com/Smutuku-arch/Uswawi/issues)
+
+---
+
+**Ustawi** — Empowering young Kenyans to thrive mentally, academically, and professionally. 🌟
