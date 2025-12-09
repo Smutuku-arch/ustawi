@@ -2,6 +2,7 @@
   display: flex;
   min-height: 100vh;
   background: #f5f7fa;
+  overflow-x: hidden; /* Prevent horizontal scroll on body */
 }
 
 .dashboard-nav {
@@ -100,7 +101,7 @@
   padding: 20px 30px;
   border-top: 1px solid #eee;
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Changed from center to align items to top */
   gap: 12px;
 }
 
@@ -116,11 +117,14 @@
   font-weight: 700;
   font-size: 1.2rem;
   flex-shrink: 0;
+  margin-top: 2px; /* Slight adjustment for alignment */
 }
 
 .user-info {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column; /* Ensure vertical stacking */
 }
 
 .user-name {
@@ -143,15 +147,17 @@
 }
 
 .btn-logout {
-  padding: 8px 16px;
+  padding: 6px 12px;
   background: #fee;
   color: #c33;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  margin-top: 8px; /* Add spacing above button */
+  width: fit-content; /* Only take necessary width */
 }
 
 .btn-logout:hover {
@@ -160,14 +166,17 @@
 
 .dashboard-main {
   margin-left: 280px;
+  width: calc(100% - 280px); /* Ensure width doesn't exceed viewport */
   flex: 1;
   padding: 40px;
   min-height: 100vh;
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .dashboard-home {
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%; /* Ensure it fits within parent */
 }
 
 .welcome-card {
@@ -192,7 +201,7 @@
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); /* Reduced min-width */
   gap: 25px;
   margin-bottom: 40px;
 }
@@ -245,7 +254,7 @@
 
 .action-buttons {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Reduced min-width */
   gap: 15px;
 }
 
@@ -279,10 +288,13 @@
     width: 100%;
     height: auto;
     position: relative;
+    max-height: none;
+    overflow-y: visible;
   }
   
   .dashboard-main {
     margin-left: 0;
+    width: 100%;
     padding: 20px;
   }
   
@@ -295,10 +307,10 @@
   }
   
   .stats-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Stack on mobile */
   }
   
   .action-buttons {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Stack on mobile */
   }
 }

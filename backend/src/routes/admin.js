@@ -2,6 +2,7 @@ const express = require('express');
 const User = require('../models/User');
 const Book = require('../models/Book');
 const Article = require('../models/Article');
+const Video = require('../models/Video');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const upload = require('../utils/upload');
@@ -125,6 +126,66 @@ router.delete('/articles/:id', auth, admin, async (req, res, next) => {
     if (!article) return res.status(404).json({ error: 'Not found' });
     await article.deleteOne();
     res.json({ success: true });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// --- Video Routes ---
+
+// Upload Video
+router.post('/videos', auth, admin, upload.fields([{ name: 'file', maxCount: 1 }, { name: 'thumbnail', maxCount: 1 }]), async (req, res, next) => {
+  try {
+    const { title, description, duration } = req.body;
+    
+    if (!req.files || !req.files.file) {
+      return res.status(400).json({ error: 'Video file is required' });
+    }
+
+    // Construct URLs (assuming local storage for now)
+    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    // Note: In production, you might serve static files from backend port or cloud storage
+    // For local dev with static serving from backend:
+    const backendUrl = `http://localhost:${process.env.PORT || 4000}`;
+    
+    const videoUrl = `${backendUrl}/uploads/${req.files.file[0].filename}`;
+    let thumbnailUrl = null;
+    
+    if (req.files.thumbnail) {
+      thumbnailUrl = `${backendUrl}/uploads/${req.files.thumbnail[0].filename}`;
+    }
+
+    const video = await Video.create({
+      title,
+      description,
+      duration,
+      videoUrl,
+      thumbnailUrl,
+      uploadedBy: req.userId
+    });
+
+    res.status(201).json(video);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// List Videos
+router.get('/videos', auth, admin, async (req, res, next) => {
+  try {
+    const videos = await Video.find().sort({ createdAt: -1 }).populate('uploadedBy', 'name');
+    res.json(videos);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Delete Video
+router.delete('/videos/:id', auth, admin, async (req, res, next) => {
+  try {
+    const video = await Video.findByIdAndDelete(req.params.id);
+    if (!video) return res.status(404).json({ error: 'Video not found' });
+    res.json({ message: 'Video deleted successfully' });
   } catch (err) {
     next(err);
   }

@@ -14,11 +14,12 @@ function Navbar({ onLoginClick }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
   };
 
   return (
@@ -33,21 +34,27 @@ function Navbar({ onLoginClick }) {
         </div>
         
         <button 
-          className="mobile-menu-toggle"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className={`mobile-menu-toggle ${isMobileMenuOpen ? 'active' : ''}`}
+          onClick={toggleMobileMenu}
+          aria-label="Toggle menu"
         >
-          {isMobileMenuOpen ? '✕' : '☰'}
+          <span></span>
+          <span></span>
+          <span></span>
         </button>
         
         <div className={`navbar-menu ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
-          <a href="#services" onClick={() => setIsMobileMenuOpen(false)}>Services</a>
-          <a href="#howItWorks" onClick={() => setIsMobileMenuOpen(false)}>How It Works</a>
-          <a href="#testimonials" onClick={() => setIsMobileMenuOpen(false)}>About Us</a>
-          <a href="#chatfeature" onClick={() => setIsMobileMenuOpen(false)}>AI Therapist</a>
-          <button className="btn-get-started" onClick={onLoginClick}>
+          <a href="#services" onClick={closeMobileMenu}>Services</a>
+          <a href="#howItWorks" onClick={closeMobileMenu}>How It Works</a>
+          <a href="#testimonials" onClick={closeMobileMenu}>About Us</a>
+          <a href="#chatfeature" onClick={closeMobileMenu}>AI Therapist</a>
+          <button className="btn-get-started" onClick={() => { closeMobileMenu(); onLoginClick(); }}>
             Get Started
           </button>
         </div>
+        
+        {/* Overlay for mobile menu */}
+        {isMobileMenuOpen && <div className="navbar-overlay" onClick={closeMobileMenu}></div>}
       </div>
     </nav>
   );

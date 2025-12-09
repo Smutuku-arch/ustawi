@@ -15,8 +15,12 @@ function Dashboard({ user, onLogout }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Debug: Check if user role is correct in console
+    console.log('Current User:', user);
+    console.log('Is Admin?', user.role === 'admin');
+    
     loadStats();
-  }, []);
+  }, [user]);
 
   async function loadStats() {
     try {
@@ -72,6 +76,8 @@ function Dashboard({ user, onLogout }) {
             >
               <span className="icon">📅</span> Book Session
             </button>
+            
+            {/* Admin Button - Only visible for admin users */}
             {user.role === 'admin' && (
               <button 
                 className={activeTab === 'admin' ? 'active' : ''} 
@@ -89,10 +95,10 @@ function Dashboard({ user, onLogout }) {
             <div className="user-info">
               <span className="user-name">{user.name}</span>
               <span className="user-email">{user.email}</span>
+              <button className="btn-logout" onClick={onLogout}>
+                Logout
+              </button>
             </div>
-            <button className="btn-logout" onClick={onLogout}>
-              Logout
-            </button>
           </div>
         </div>
       </nav>
@@ -159,6 +165,8 @@ function Dashboard({ user, onLogout }) {
           <Resources activeTab={activeTab} setActiveTab={setActiveTab} />
         )}
         {activeTab === 'book' && <BookSession />}
+        
+        {/* Admin Dashboard Component */}
         {activeTab === 'admin' && user.role === 'admin' && <AdminDashboard />}
       </main>
     </div>

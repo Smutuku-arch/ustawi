@@ -92,8 +92,16 @@ router.post('/login', async (req, res, next) => {
 });
 
 // current user
-router.get('/me', auth, (req, res) => {
-  res.json({ user: req.user });
+router.get('/me', auth, async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId).select('-password');
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;

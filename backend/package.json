@@ -8,6 +8,7 @@
     "dev": "nodemon src/index.js",
     "setup": "mkdir -p uploads",
     "create-admin": "node src/scripts/createAdmin.js",
+    "check-admins": "node src/scripts/checkAdmins.js",
     "reset-db": "node src/scripts/resetDb.js",
     "seed": "node src/scripts/seed.js"
   },
