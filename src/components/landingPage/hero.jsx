@@ -1,40 +1,31 @@
-import React from 'react'
-import './hero.css' // add this line if missing
-import { Link } from 'react-router-dom'
-import styles from '../../assets/styles/landingPage/hero.module.css'
-import heroImage from '../../assets/images/hero.bg.webp' 
+import React from 'react';
+import './hero.css';
 
-function Hero({ user, onLoginClick }) {
+function Hero({ onLoginClick }) {
   return (
     <section className="hero">
-      <div className={styles.heroWrapper}>
-        <div className={styles.heroText}>
-          <h1 className={styles.heroTitle}>
-            Your Journey to Mental Wellness Starts Here
-          </h1>
-          <p className={styles.heroSubtitle}>
-            Expert-led therapy tailored to your unique needs. At Ustawi, we’re here to guide you toward healing, growth, and lasting wellness in a supportive and inclusive environment.
-          </p>
-          <div className={styles.heroButtons}>
-            <Link to={user !== null ? 'booking' : 'signup'} className={styles.primaryButton}>
-              {user !== null ? 'Book A Session' : 'Get Started Here'}
-            </Link>
-            <a href="#faqs" className={styles.secondaryButton}>Learn More</a>
-          </div>
-        </div>
-
-        <div className={styles.heroImage}>
-          <img src={heroImage} alt="Therapy illustration" />
+      <div className="hero-content">
+        <h1>Your Journey to Wellness Starts Here</h1>
+        <p>
+          Expert-led therapy tailored to your unique needs. At Ustawi, we're here to guide you toward healing, growth, and lasting wellness in a supportive and inclusive environment.
+        </p>
+        <div className="hero-buttons">
+          <button className="btn-primary" onClick={onLoginClick}>
+            Get Started
+          </button>
+          <a href="#services" className="btn-secondary">
+            Learn More
+          </a>
         </div>
       </div>
-
-      {!user && (
-        <button className="btn-login" onClick={onLoginClick}>
-          Login
-        </button>
-      )}
+      <div className="hero-image">
+        <img 
+          src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=600&h=400&fit=crop" 
+          alt="Person meditating peacefully" 
+        />
+      </div>
     </section>
-  )
+  );
 }
 
-export default Hero
+export default Hero;

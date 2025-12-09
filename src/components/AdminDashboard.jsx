@@ -231,6 +231,9 @@ export default function AdminDashboard() {
     totalVideos: videos.length
   };
 
+  // Filter out any anonymous users that might slip through
+  const realUsers = users.filter(u => u._id !== 'anonymous' && u.email !== 'anonymous@session');
+
   return (
     <div className="admin-dashboard">
       <div className="admin-header">
@@ -319,7 +322,7 @@ export default function AdminDashboard() {
             <p>View and manage user roles</p>
           </div>
           <div className="users-grid">
-            {users.map(u => (
+            {realUsers.map(u => (
               <div key={u._id} className="user-card">
                 <div className="user-avatar-large">
                   {u.name ? u.name[0].toUpperCase() : u.email[0].toUpperCase()}

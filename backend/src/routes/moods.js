@@ -9,9 +9,41 @@ const router = express.Router();
 router.post('/', auth, async (req, res, next) => {
   try {
     const { mood, score, note } = req.body;
-    if (!mood) return res.status(400).json({ error: 'Mood required' });
-    const entry = await Mood.create({ user: req.userId, mood, score, note });
+    if (!mood) return res.status(400).json({ error: 'Mood is required' });
+
+    const entry = await Mood.create({
+      user: req.userId,
+      mood,
+      score: score || 5,
+      note: note || ''
+    });
+
     res.status(201).json(entry);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// stats: recent moods, average score, mood distribution
+router.get('/stats', auth, async (req, res, next) => {
+  try {
+    const moods = await Mood.find({ user: req.userId }).sort({ date: -1 }).limit(30);
+    
+    const avgScore = moods.length > 0
+      ? moods.reduce((sum, m) => sum + m.score, 0) / moods.length
+      : 0;
+
+    const moodCounts = {};
+    moods.forEach(m => {
+      moodCounts[m.mood] = (moodCounts[m.mood] || 0) + 1;
+    });
+
+    res.json({
+      recentMoods: moods.slice(0, 7),
+      averageScore: avgScore.toFixed(1),
+      moodDistribution: moodCounts,
+      totalEntries: moods.length
+    });
   } catch (err) {
     next(err);
   }
@@ -20,8 +52,10 @@ router.post('/', auth, async (req, res, next) => {
 // list current user's moods (latest first)
 router.get('/', auth, async (req, res, next) => {
   try {
-    const entries = await Mood.find({ user: req.userId }).sort({ createdAt: -1 }).lean();
-    res.json(entries);
+    const moods = await Mood.find({ user: req.userId })
+      .sort({ date: -1 })
+      .limit(100);
+    res.json(moods);
   } catch (err) {
     next(err);
   }
@@ -55,6 +89,11 @@ router.delete('/:id', auth, async (req, res, next) => {
 // simple stats: average score and counts by mood for the current user
 router.get('/stats/summary', auth, async (req, res, next) => {
   try {
+    // Block anonymous users
+    if (req.isAnonymous) {
+      return res.status(403).json({ error: 'Create an account to view mood statistics' });
+    }
+
     const userId = new mongoose.Types.ObjectId(req.userId);
     
     // Get all moods with scores

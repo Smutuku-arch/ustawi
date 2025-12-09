@@ -13,7 +13,7 @@ const router = express.Router();
 // --- Users ---
 router.get('/users', auth, admin, async (req, res, next) => {
   try {
-    const users = await User.find().select('name email role createdAt').sort({ createdAt: -1 });
+    const users = await User.find().select('-password');
     res.json(users);
   } catch (err) {
     next(err);

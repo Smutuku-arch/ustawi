@@ -1,12 +1,19 @@
 const mongoose = require('mongoose');
 
-const ResourceSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  type: { type: String },
-  location: { type: String },
-  capacity: { type: Number },
-  metadata: { type: mongoose.Schema.Types.Mixed },
-  createdAt: { type: Date, default: Date.now }
+const resourceSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  type: {
+    type: String,
+    enum: ['therapist', 'counselor', 'career-coach'],
+    required: true
+  },
+  specialty: String,
+  availability: [String], // Array of available days/times
+  imageUrl: String,
+  description: String
 });
 
-module.exports = mongoose.model('Resource', ResourceSchema);
+module.exports = mongoose.model('Resource', resourceSchema);

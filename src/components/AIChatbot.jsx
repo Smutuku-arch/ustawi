@@ -1,14 +1,26 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { sendChatMessage } from '../api/ai';
+import axios from 'axios';
 import './AIChatbot.css';
+
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:4000';
 
 export default function AIChatbot() {
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Hello! I\'m Ustawi AI, your compassionate mental health and career guidance assistant. How can I support you today?' }
+    {
+      role: 'assistant',
+      content: 'Hello! 👋 I\'m Ustawi, your AI wellness companion. I\'m here to provide support, guidance, and a listening ear. How can I help you today?'
+    }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
+
+  const quickPrompts = [
+    '💭 I\'m feeling stressed about exams',
+    '💼 Help me choose a career path',
+    '😰 I\'m dealing with anxiety',
+    '🎯 I need motivation tips'
+  ];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -28,25 +40,32 @@ export default function AIChatbot() {
     setLoading(true);
 
     try {
-      const { reply } = await sendChatMessage(input);
-      setMessages((m) => [...m, { role: 'assistant', content: reply }]);
+      const conversationHistory = [...messages, userMsg].slice(-10);
+      
+      const { data } = await axios.post(
+        `${API_BASE}/api/ai/chat`,
+        {
+          message: input,
+          conversationHistory
+        }
+      );
+
+      setMessages((m) => [...m, { role: 'assistant', content: data.reply }]);
     } catch (err) {
-      setMessages((m) => [...m, { 
-        role: 'assistant', 
-        content: `I apologize, but I'm having trouble connecting right now. Error: ${err.message}. Please try again in a moment.`,
-        isError: true
+      console.error('Chat error:', err);
+      const errorMessage = err.response?.data?.error || 'Sorry, I encountered an error. Please try again.';
+      setMessages((m) => [...m, {
+        role: 'assistant',
+        content: errorMessage
       }]);
     } finally {
       setLoading(false);
     }
   }
 
-  const quickPrompts = [
-    '💭 I\'m feeling stressed about exams',
-    '💼 Help me choose a career path',
-    '😰 I\'m dealing with anxiety',
-    '🎯 I need motivation tips'
-  ];
+  const handlePromptClick = (prompt) => {
+    setInput(prompt.split(' ').slice(1).join(' '));
+  };
 
   return (
     <div className="ai-chatbot">
@@ -67,7 +86,7 @@ export default function AIChatbot() {
 
       <div className="chat-messages">
         {messages.map((msg, i) => (
-          <div key={i} className={`message ${msg.role} ${msg.isError ? 'error' : ''}`}>
+          <div key={i} className={`message ${msg.role}`}>
             <div className="message-avatar">
               {msg.role === 'user' ? (
                 <span>👤</span>
@@ -114,7 +133,7 @@ export default function AIChatbot() {
               <button 
                 key={i} 
                 className="prompt-btn"
-                onClick={() => setInput(prompt.split(' ').slice(1).join(' '))}
+                onClick={() => handlePromptClick(prompt)}
               >
                 {prompt}
               </button>

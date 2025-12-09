@@ -1,25 +1,67 @@
 const express = require('express');
+const router = express.Router();
+const auth = require('../middleware/auth');
 const Appointment = require('../models/Appointment');
 const Resource = require('../models/Resource');
-const auth = require('../middleware/auth');
 
-const router = express.Router();
+// Create appointment
+router.post('/', auth, async (req, res, next) => {
+  try {
+    console.log('Booking appointment request:', req.body);
+    const { resourceId, date, time, notes } = req.body;
+    
+    if (!resourceId || !date || !time) {
+      return res.status(400).json({ error: 'Resource, date, and time are required' });
+    }
 
-// helper: check overlap for a resource
-async function hasConflict(resourceId, start, end, excludeId) {
-  const q = {
-    resource: resourceId,
-    status: { $ne: 'cancelled' },
-    start: { $lt: new Date(end) },
-    end: { $gt: new Date(start) }
-  };
-  if (excludeId) q._id = { $ne: excludeId };
-  return !!(await Appointment.findOne(q).lean());
-}
+    // Validate resourceId format
+    if (!resourceId.match(/^[0-9a-fA-F]{24}$/)) {
+       return res.status(400).json({ error: 'Invalid resource ID' });
+    }
+
+    const resource = await Resource.findById(resourceId);
+    if (!resource) {
+      return res.status(404).json({ error: 'Resource not found' });
+    }
+
+    const conflict = await Appointment.findOne({
+      resource: resourceId,
+      date,
+      time,
+      status: { $ne: 'cancelled' }
+    });
+
+    if (conflict) {
+      return res.status(400).json({ error: 'Time slot already booked' });
+    }
+
+    const appointment = await Appointment.create({
+      user: req.userId,
+      resource: resourceId,
+      date,
+      time,
+      notes
+    });
+
+    const populated = await Appointment.findById(appointment._id)
+      .populate('resource')
+      .populate('user', 'name email');
+
+    res.status(201).json(populated);
+  } catch (err) {
+    console.error('Appointment creation error:', err);
+    next(err);
+  }
+});
 
 // list (user's appointments or filter by resource)
 router.get('/', auth, async (req, res, next) => {
   try {
+    // Block anonymous users
+    if (req.isAnonymous) {
+      return res.status(403).json({ error: 'Create an account to view your appointments' });
+    }
+
     const { resource } = req.query;
     const filter = { user: req.userId };
     if (resource) filter.resource = resource;
@@ -37,33 +79,6 @@ router.get('/:id', auth, async (req, res, next) => {
     if (!appt) return res.status(404).json({ error: 'Not found' });
     if (!appt.user.equals(req.userId)) return res.status(403).json({ error: 'Forbidden' });
     res.json(appt);
-  } catch (err) {
-    next(err);
-  }
-});
-
-// create
-router.post('/', auth, async (req, res, next) => {
-  try {
-    const { title, description, resource, start, end } = req.body;
-    if (!title || !resource || !start || !end) return res.status(400).json({ error: 'Missing fields' });
-    if (new Date(start) >= new Date(end)) return res.status(400).json({ error: 'Invalid time range' });
-
-    const resDoc = await Resource.findById(resource);
-    if (!resDoc) return res.status(404).json({ error: 'Resource not found' });
-
-    if (await hasConflict(resource, start, end)) return res.status(409).json({ error: 'Time slot conflict' });
-
-    const appt = await Appointment.create({
-      title,
-      description,
-      resource,
-      user: req.userId,
-      start: new Date(start),
-      end: new Date(end)
-    });
-
-    res.status(201).json(appt);
   } catch (err) {
     next(err);
   }
