@@ -13,6 +13,7 @@ function Dashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('home');
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   useEffect(() => {
     // Debug: Check if user role is correct in console
@@ -33,9 +34,32 @@ function Dashboard({ user, onLogout }) {
     }
   }
 
+  // Close mobile nav when a tab is selected
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+    setIsMobileNavOpen(false);
+  };
+
   return (
     <div className="dashboard">
-      <nav className="dashboard-nav">
+      {/* Mobile Toggle Button */}
+      <button 
+        className="mobile-nav-toggle"
+        onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
+        aria-label="Toggle navigation"
+      >
+        ☰
+      </button>
+
+      {/* Overlay for mobile */}
+      {isMobileNavOpen && (
+        <div 
+          className="dashboard-overlay" 
+          onClick={() => setIsMobileNavOpen(false)}
+        />
+      )}
+
+      <nav className={`dashboard-nav ${isMobileNavOpen ? 'open' : ''}`}>
         <div className="navbar-container">
           <div className="nav-brand">
             <div className="logo">🌱</div>
@@ -48,31 +72,31 @@ function Dashboard({ user, onLogout }) {
           <div className="nav-links">
             <button 
               className={activeTab === 'home' ? 'active' : ''} 
-              onClick={() => setActiveTab('home')}
+              onClick={() => handleTabClick('home')}
             >
               <span className="icon">🏠</span> Home
             </button>
             <button 
               className={activeTab === 'mood' ? 'active' : ''} 
-              onClick={() => setActiveTab('mood')}
+              onClick={() => handleTabClick('mood')}
             >
               <span className="icon">📊</span> Mood Tracker
             </button>
             <button 
               className={activeTab === 'chat' ? 'active' : ''} 
-              onClick={() => setActiveTab('chat')}
+              onClick={() => handleTabClick('chat')}
             >
               <span className="icon">💬</span> AI Chat
             </button>
             <button 
               className={activeTab === 'resources' || activeTab.startsWith('view-') ? 'active' : ''} 
-              onClick={() => setActiveTab('resources')}
+              onClick={() => handleTabClick('resources')}
             >
               <span className="icon">📚</span> Resources
             </button>
             <button 
               className={activeTab === 'book' ? 'active' : ''} 
-              onClick={() => setActiveTab('book')}
+              onClick={() => handleTabClick('book')}
             >
               <span className="icon">📅</span> Book Session
             </button>
@@ -81,7 +105,7 @@ function Dashboard({ user, onLogout }) {
             {user.role === 'admin' && (
               <button 
                 className={activeTab === 'admin' ? 'active' : ''} 
-                onClick={() => setActiveTab('admin')}
+                onClick={() => handleTabClick('admin')}
               >
                 <span className="icon">⚙️</span> Admin
               </button>
