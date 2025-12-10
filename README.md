@@ -20,10 +20,10 @@ Whether you're a student managing academic stress, a graduate navigating career 
 - Historical mood data visualization
 
 ### 🤖 AI-Powered Chatbot
-- Intelligent conversational assistant using OpenAI GPT
-- Contextual wellness tips and career guidance
-- Empathetic responses to stress, anxiety, and decision-making
-- Pre-built conversation prompts for common concerns
+- **Multi-Provider Support**: Seamlessly switch between Google Gemini, DeepSeek, and OpenAI.
+- Intelligent conversational assistant for wellness and career guidance.
+- Empathetic responses to stress, anxiety, and decision-making.
+- Pre-built conversation prompts for common concerns.
 
 ### 📚 Comprehensive Resource Library
 - **Books**: Upload and read PDF books with inline viewer
@@ -47,20 +47,21 @@ Whether you're a student managing academic stress, a graduate navigating career 
 - Appointment confirmation system
 
 ### ⚙️ Advanced Admin Dashboard
-- **User Management**: View all users and manage roles (admin/user)
+- **User Management**: View all users and manage roles (admin/user).
 - **Content Management**:
-  - Upload books with cover images
-  - Write and edit articles with rich formatting
-  - Upload videos with thumbnails
-  - Delete and manage all content types
-- **Analytics**: Track total users, admins, books, articles, and videos
-- **Real-time Updates**: Instant feedback for all admin actions
+  - Upload books with cover images.
+  - Write and edit articles with rich formatting.
+  - Upload videos with thumbnails.
+  - Delete and manage all content types.
+- **Analytics**: Track total users, admins, books, articles, and videos.
+- **Real-time Updates**: Instant feedback for all admin actions.
+- **Responsive Design**: Fully optimized for mobile and desktop administration.
 
 ### 📱 Responsive Design
-- Mobile-first approach optimized for smartphones
-- Tablet and desktop layouts
-- Smooth animations and transitions
-- Optimized for low-bandwidth environments
+- Mobile-first approach optimized for smartphones.
+- Collapsible sidebars and hamburger menus for better mobile navigation.
+- Tablet and desktop layouts.
+- Smooth animations and transitions.
 
 ---
 
@@ -82,9 +83,10 @@ Whether you're a student managing academic stress, a graduate navigating career 
 - **CORS** for cross-origin requests
 
 ### AI Integration
-- **OpenAI API** (GPT-3.5/4) for chatbot
-- Custom prompt engineering for Kenyan context
-- Swahili and English support
+- **Google Gemini API** (Default/Free Tier)
+- **DeepSeek API** (Cost-effective alternative)
+- **OpenAI API** (Standard option)
+- Configurable provider switching via environment variables
 
 ---
 
@@ -116,7 +118,23 @@ PORT=4000
 MONGO_URI=mongodb://localhost:27017/ustawi
 JWT_SECRET=your_strong_jwt_secret_here_min_32_chars
 FRONTEND_URL=http://localhost:5173
-OPENAI_API_KEY=your_openai_api_key_here
+
+# --- AI Configuration ---
+# Choose provider: 'gemini', 'deepseek', or 'openai'
+AI_PROVIDER=gemini
+
+# Google Gemini (Free Tier Available)
+GEMINI_API_KEY=your_gemini_key
+GEMINI_MODEL=gemini-1.5-flash
+
+# DeepSeek
+DEEPSEEK_API_KEY=your_deepseek_key
+DEEPSEEK_MODEL=deepseek-chat
+
+# OpenAI
+OPENAI_API_KEY=your_openai_key
+OPENAI_MODEL=gpt-4
+
 AUTO_CREATE_ADMIN=false
 ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=strongPassword123
@@ -132,6 +150,12 @@ Create an admin user:
 
 ```bash
 npm run create-admin -- --email=admin@localhost.com --password=admin123 --name="Admin User"
+```
+
+Check existing admins:
+
+```bash
+npm run check-admins
 ```
 
 Start the backend:
@@ -243,7 +267,11 @@ Deploy backend only—frontend served at root URL.
 | `MONGO_URI` | MongoDB connection string | Yes | `mongodb://localhost:27017/ustawi` |
 | `JWT_SECRET` | JWT signing secret (min 32 chars) | Yes | `your_very_strong_secret_key_here` |
 | `FRONTEND_URL` | Frontend origin for CORS | Yes | `http://localhost:5173` |
-| `OPENAI_API_KEY` | OpenAI API key for chatbot | Yes | `sk-...` |
+| `AI_PROVIDER` | Active AI service (`gemini`, `deepseek`, `openai`) | No | `gemini` |
+| `GEMINI_API_KEY` | Google Gemini API Key | If using Gemini | `AIza...` |
+| `GEMINI_MODEL` | Gemini Model ID | No | `gemini-1.5-flash` |
+| `DEEPSEEK_API_KEY` | DeepSeek API Key | If using DeepSeek | `sk-...` |
+| `OPENAI_API_KEY` | OpenAI API key | If using OpenAI | `sk-...` |
 | `AUTO_CREATE_ADMIN` | Auto-create admin on startup | No | `false` |
 | `ADMIN_EMAIL` | Admin email (if AUTO_CREATE) | No | `admin@example.com` |
 | `ADMIN_PASSWORD` | Admin password | No | `strongPassword` |
